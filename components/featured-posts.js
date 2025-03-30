@@ -17,26 +17,44 @@ import {
 export default function FeaturedPosts({ posts }) {
   const [expandedPost, setExpandedPost] = useState(null);
   const [reactions, setReactions] = useState({});
+  const [userReactions, setUserReactions] = useState({});
 
   const toggleExpand = (postId) => {
     setExpandedPost(expandedPost === postId ? null : postId);
   };
 
   const handleReaction = (postId, reaction) => {
-    setReactions((prev) => ({
-      ...prev,
-      [postId]: {
-        ...(prev[postId] || {}),
-        [reaction]: ((prev[postId] || {})[reaction] || 0) + 1,
-      },
-    }));
+    setReactions((prev) => {
+      const currentReactions = prev[postId] || {};
+      const isActive = userReactions[postId]?.includes(reaction);
+
+      return {
+        ...prev,
+        [postId]: {
+          ...currentReactions,
+          [reaction]: isActive
+            ? Math.max((currentReactions[reaction] || 1) - 1, 0)
+            : (currentReactions[reaction] || 0) + 1,
+        },
+      };
+    });
+
+    setUserReactions((prev) => {
+      const currentReactions = prev[postId] || [];
+      return {
+        ...prev,
+        [postId]: currentReactions.includes(reaction)
+          ? currentReactions.filter((r) => r !== reaction) // Remove reaction
+          : [...currentReactions, reaction], // Add reaction
+      };
+    });
   };
 
   const reactionIcons = {
-    fire: <Flame className="h-4 w-4" />,
-    idea: <Lightbulb className="h-4 w-4" />,
-    fun: <TheatreMask className="h-4 w-4" />,
-    love: <Heart className="h-4 w-4" />,
+    fire: Flame,
+    idea: Lightbulb,
+    fun: TheatreMask,
+    love: Heart,
   };
 
   return (
@@ -73,7 +91,7 @@ export default function FeaturedPosts({ posts }) {
 
             <div className="flex justify-between items-center">
               <div className="flex space-x-1">
-                {Object.entries(reactionIcons).map(([key, icon]) => (
+                {Object.entries(reactionIcons).map(([key, Icon]) => (
                   <Button
                     key={key}
                     variant="ghost"
@@ -81,7 +99,13 @@ export default function FeaturedPosts({ posts }) {
                     className="h-8 px-2 hover:bg-muted"
                     onClick={() => handleReaction(post.id, key)}
                   >
-                    {icon}
+                    <Icon
+                      className="h-4 w-4"
+                      fill={
+                        userReactions[post.id]?.includes(key) ? "white" : "none"
+                      }
+                      stroke="currentColor"
+                    />
                     <span className="ml-1 text-xs">
                       {reactions[post.id]?.[key] || 0}
                     </span>
