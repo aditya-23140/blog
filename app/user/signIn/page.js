@@ -110,7 +110,7 @@ export function SignIn() {
             href="/user/signUp"
             className="block mt-4 text-center text-blue-500"
           >
-            Don't have an account? Sign Up
+            Don&apos;t have an account? Sign Up
           </Link>
         </div>
       </main>
