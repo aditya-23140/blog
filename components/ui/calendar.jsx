@@ -1,34 +1,100 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker } from "react-day-picker"
+import React, { useState } from "react";
+import { DayPicker } from "react-day-picker";
+import { format, setYear, getYear, addMonths, subMonths } from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+// Custom header (caption) with month navigation and year dropdown
+function CustomCaption({ displayMonth, onMonthChange, locale }) {
+  const [showYearDropdown, setShowYearDropdown] = useState(false);
 
-function Calendar({
+  const handleYearChange = (e) => {
+    const newYear = parseInt(e.target.value, 10);
+    onMonthChange(setYear(displayMonth, newYear));
+    setShowYearDropdown(false);
+  };
+
+  return (
+    <div className="flex items-center justify-between w-full px-4 py-3 bg-muted rounded-lg">
+      {/* Previous Month Button */}
+      <button
+        type="button"
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "p-2 rounded-lg hover:bg-primary/20 transition"
+        )}
+        onClick={() => onMonthChange(subMonths(displayMonth, 1))}
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+
+      {/* Month/Year Label & Year Dropdown */}
+      <div className="relative">
+        <button
+          type="button"
+          className="text-base font-semibold hover:text-primary transition"
+          onClick={() => setShowYearDropdown((prev) => !prev)}
+        >
+          {format(displayMonth, "MMMM yyyy", { locale })}
+        </button>
+        {showYearDropdown && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 mt-2 w-24 rounded-md border border-muted bg-popover text-popover-foreground shadow-lg">
+            <select
+              className="w-full px-2 py-2 text-sm bg-popover outline-1 focus:ring-primary rounded-sm max-h-52 overflow-y-auto scrollbar-hide"
+              value={getYear(displayMonth)}
+              onChange={handleYearChange}
+            >
+              {Array.from({ length: 125 }, (_, i) => {
+                const year = new Date().getFullYear() - i;
+                return (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        )}
+      </div>
+
+      {/* Next Month Button */}
+      <button
+        type="button"
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "p-2 rounded-lg hover:bg-primary/20 transition"
+        )}
+        onClick={() => onMonthChange(addMonths(displayMonth, 1))}
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
+    </div>
+  );
+}
+
+export function Calendar({
   className,
   classNames,
   showOutsideDays = true,
   ...props
 }) {
+  // Maintain local state for the controlled month
+  const [month, setMonth] = useState(new Date());
+
   return (
-    (<DayPicker
+    <DayPicker
+      month={month}
+      onMonthChange={setMonth}
       showOutsideDays={showOutsideDays}
+      captionLayout="custom"
       className={cn("p-3", className)}
       classNames={{
+        caption: "hidden",
         months: "flex flex-col sm:flex-row gap-2",
         month: "flex flex-col gap-4",
-        caption: "flex justify-center pt-1 relative items-center w-full",
-        caption_label: "text-sm font-medium",
-        nav: "flex items-center gap-1",
-        nav_button: cn(
-          buttonVariants({ variant: "outline" }),
-          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
-        ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-x-1",
         head_row: "flex",
         head_cell:
@@ -60,15 +126,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
+        Caption: (captionProps) => (
+          <CustomCaption {...captionProps} onMonthChange={setMonth} />
         ),
       }}
-      {...props} />)
+      {...props}
+    />
   );
 }
-
-export { Calendar }
