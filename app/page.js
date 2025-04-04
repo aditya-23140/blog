@@ -5,7 +5,7 @@ import Link from "next/link";
 const LandingPage = () => {
   return (
     <main>
-      <Link href={"./user/SignUp"}>SignIn/SignUp</Link>
+      <Link href={"./user/signUp"}>SignIn/SignUp</Link>
     </main>
   );
 };

@@ -6,6 +6,7 @@ export function middleware(request) {
   const path = request.nextUrl.pathname; //used to find path of user
 
   const isPublicPath =
+    path === "/" ||
     path === "/user/signIn" ||
     path === "/user/signUp" ||
     path === "/verifyemail" ||
@@ -18,7 +19,7 @@ export function middleware(request) {
     return NextResponse.redirect(new URL("/main", request.url));
   }
   if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/user/signIn", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
   return NextResponse.next();
 }
@@ -26,5 +27,13 @@ export function middleware(request) {
 // See "Matching Paths" below to learn more
 //tell which page these logic should work on
 export const config = {
-  matcher: ["/", "/user/signIn", "/user/signUp", "/verifyemail", "/profile"],
+  matcher: [
+    "/",
+    "/user/signIn",
+    "/user/signUp",
+    "/verifyemail",
+    "/resetpassword",
+    "/profile",
+    "/main",
+  ],
 };
