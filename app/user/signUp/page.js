@@ -5,13 +5,18 @@ import Link from "next/link";
 const SignUp = () => {
   return (
     <>
-      <main className="flex justify-center items-center pb-10 h-[90dvh] min-h-fit">
-        <div className="py-12 bg-accent px-4 w-[80dvw] min-[650px]:w-[45dvw] rounded-lg">
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-md border px-4 py-8 rounded-md shadow-lg">
           <h1 className="mb-4 text-3xl text-center font-extrabold">SignUp</h1>
           <RegisterForm />
-        <Link href="/user/signIn">Login page</Link>
+          <div className="mt-4 text-center text-sm relative -top-3">
+            Already have an account?{" "}
+            <Link href="/user/signIn" className="underline underline-offset-4">
+              Sign In
+            </Link>
+          </div>
         </div>
-      </main>
+      </div>
     </>
   );
 };

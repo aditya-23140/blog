@@ -93,7 +93,9 @@ export function SignInForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">SignIn</Button>
+        <Button type="submit" className="w-full">
+          SignIn
+        </Button>
       </form>
     </Form>
   );
@@ -102,18 +104,18 @@ export function SignInForm() {
 export function SignIn() {
   return (
     <>
-      <main className="flex justify-center items-center pb-10 h-[90dvh] min-h-fit">
-        <div className="py-12 bg-accent px-4 w-[80dvw] min-[650px]:w-[45dvw] rounded-lg">
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm border px-4 py-8 rounded-md shadow-lg">
           <h1 className="mb-4 text-3xl text-center font-extrabold">Log In</h1>
           <SignInForm />
-          <Link
-            href="/user/signUp"
-            className="block mt-4 text-center text-blue-500"
-          >
-            Don&apos;t have an account? Sign Up
-          </Link>
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{" "}
+            <Link href="/user/signUp" className="underline underline-offset-4">
+              Sign up
+            </Link>
+          </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

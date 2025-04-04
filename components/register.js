@@ -186,7 +186,9 @@ export function RegisterForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="w-full -top-5 relative">
+            Submit
+          </Button>
         </form>
       </Form>
     </>
